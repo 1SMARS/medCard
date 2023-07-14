@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            text-align: center;
+            margin-top: 80px;
+        }
+
+        .text-container {
+            margin-bottom: 20px;
+            text-align: start;
+            margin-left: 15%;
+            width: fit-content;
+
+        }
+
+        #text {
+            font-size: 16px;
+        }
+
+        .table-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .my-table {
+            border-collapse: collapse;
+            width: 70%;
+            text-align: center;
+        }
+
+        .my-table td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 6px 15px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: gray;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: black;
+        }
+
+        thead tr td {
+            font-weight: bold;
+        }
+
+
+    </style>
+</head>
+<body>
+<ul th:replace="navbar-layout :: clientNavBar"></ul>
+
+<div class="container">
+    <div class="text-container">
+        <p id="text" th:text="${'You are enrolling to: doctor ' + doctor.firstName + ' ' + doctor.lastName}">You are enrolling to: (Doctor's name)</p>
+    </div>
+    <div class="table-container">
+        <form action="/client/enroll/{doctorId}" method="post">
+            <input type="hidden" name="doctorId" th:value="${doctor.doctorId}" />
+
+            <select name="appointmentTime">
+                <option value="">Выберите время</option>
+                <option th:each="time : ${availableTimes}"
+                        th:value="${time}" th:text="${time.toString()}"></option>
+            </select>
+
+            <button type="submit">Записаться</button>
+        </form>
+    </div>
+</div>
+</body>
+
+</html>
