@@ -9,12 +9,16 @@ import com.medcard.dto.patient.PatientResponse;
 import com.medcard.dto.patient.PatientResponses;
 import com.medcard.entities.History;
 import com.medcard.services.impl.*;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
 @RequestMapping("/patient")
+@AllArgsConstructor
+@PreAuthorize("hasAnyAuthority('ROLE_PATIENT')")
 public class PatientController {
 
 	private final PatientServiceImpl patientServiceImpl;
@@ -22,16 +26,6 @@ public class PatientController {
 	private final FormServiceImpl formService;
 	private final AppointmentServiceImpl appointmentService;
 	private final HistoryServiceImpl historyService;
-
-
-	@Autowired
-	public PatientController(PatientServiceImpl patientServiceImpl, DoctorServiceImpl doctorServiceImpl, FormServiceImpl formService, AppointmentServiceImpl appointmentService, HistoryServiceImpl historyService) {
-		this.patientServiceImpl = patientServiceImpl;
-		this.doctorServiceImpl = doctorServiceImpl;
-		this.formService = formService;
-		this.appointmentService = appointmentService;
-		this.historyService = historyService;
-	}
 
 	@GetMapping(value = "/get/doctors")
 	public List<DoctorResponses> doctors() {
