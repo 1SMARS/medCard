@@ -10,28 +10,24 @@ import com.medcard.services.impl.AppointmentServiceImpl;
 import com.medcard.services.impl.DoctorServiceImpl;
 import com.medcard.services.impl.FormServiceImpl;
 import com.medcard.services.impl.PatientServiceImpl;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping(value="/doctor")
+@RequestMapping("/doctor")
+@AllArgsConstructor
+@PreAuthorize("hasAnyAuthority('ROLE_DOCTOR')")
+
 public class DoctorController {
 
 	private final DoctorServiceImpl doctorServiceImpl;
 	private final PatientServiceImpl patientService;
 	private final FormServiceImpl formService;
 	private final AppointmentServiceImpl appointmentService;
-
-
-	@Autowired
-	public DoctorController(DoctorServiceImpl doctorServiceImpl, PatientServiceImpl patientService, FormServiceImpl formService, AppointmentServiceImpl appointmentService) {
-		this.doctorServiceImpl = doctorServiceImpl;
-		this.patientService = patientService;
-		this.formService = formService;
-		this.appointmentService = appointmentService;
-	}
 
 	@GetMapping(value = "/get/doctors")
 	public List<DoctorResponses> doctors() {
@@ -41,6 +37,11 @@ public class DoctorController {
 	@GetMapping(value = "/get/patient/{id}")
 	public PatientResponses patient(@PathVariable Long id) {
 		return patientService.getById(id);
+	}
+
+	@GetMapping(value = "/get/{id}")
+	public DoctorResponses doctor(@PathVariable Long id) {
+		return doctorServiceImpl.getById(id);
 	}
 
 	@PostMapping("/update/{id}")
