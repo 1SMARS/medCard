@@ -45,6 +45,10 @@
             align-items: center;
         }
 
+        .doctor-profile img {
+            border-radius: 50%;
+        }
+
         .profile-image {
             width: 180px;
             height: 180px;
@@ -113,7 +117,7 @@
     </table>
 
     <div class="doctor-profile">
-        <img class="profile-image" src="https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png" alt="Photo">
+        <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" th:src="@{${'/IMAGES/' + doctor.profileImg}}" width="150" height="150">
     </div>
 </div>
 <div class="bottom-buttons">

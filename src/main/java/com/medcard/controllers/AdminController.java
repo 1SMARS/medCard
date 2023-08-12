@@ -13,7 +13,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -79,8 +84,9 @@ public class AdminController {
 	}
 
 	@PostMapping("/update/doctor/{id}")
-	public String updateDoctor(@PathVariable Long id, DoctorUpdateRequest doctor){
-		doctorServiceImpl.update(id, doctor);
+	public String updateDoctor(@PathVariable Long id, DoctorUpdateRequest doctor) {
+
+		doctorServiceImpl.updateForAdmin(id, doctor);
 		return "redirect:/admin/doctors";
 	}
 

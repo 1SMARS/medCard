@@ -15,6 +15,4 @@ public interface UserService {
     void saveUser(DoctorCreateRequest userDto);
 
     User findUserByEmail(String email);
-
-    Doctor update(Long id, DoctorUpdateRequest updateDoctor);
 }

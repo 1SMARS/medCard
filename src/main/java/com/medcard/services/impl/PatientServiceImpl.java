@@ -21,14 +21,14 @@ public class PatientServiceImpl implements PatientService {
 	}
 
 	@Override
-	public Patient update(Long id, PatientUpdateRequest updatePatient) {
+	public Patient update(Long id, PatientUpdateRequest updatePatient, String imageUUID) {
 			Patient patient = getById(id);
 			patient.getUser().setFirstname(updatePatient.getFirstname());
 			patient.getUser().setLastname(updatePatient.getLastname());
 			patient.getUser().setCity(updatePatient.getCity());
 			patient.getUser().setBirthDate(updatePatient.getBirthDate());
 			patient.getUser().setPhoneNumber(updatePatient.getPhoneNumber());
-			patient.getUser().setProfileImg(updatePatient.getProfileImg());
+			patient.getUser().setProfileImg(imageUUID);
 
 			return patientRepository.save(patient);
 	}

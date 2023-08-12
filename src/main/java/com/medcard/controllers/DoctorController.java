@@ -11,7 +11,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -61,9 +66,22 @@ public class DoctorController {
 	}
 
 	@PostMapping("/update")
-	public String update(@ModelAttribute DoctorUpdateRequest doctor, Model model) {
+	public String update(@ModelAttribute DoctorUpdateRequest doctor, Model model,
+						 @RequestParam("profileImg") MultipartFile file,
+						 @RequestParam("imgName")String imgName) throws IOException {
 		long id = currentUserFinder.getCurrentUserId();
-		doctorService.update(id, doctor);
+
+		String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/IMAGES";
+
+		String imageUUID;
+		if(!file.isEmpty()) {
+			imageUUID = file.getOriginalFilename();
+			Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
+			Files.write(fileNameAndPath, file.getBytes());
+		} else {
+			imageUUID = imgName;
+		}
+		doctorService.update(id, doctor, imageUUID);
 		return "redirect:/doctor/profile";
 	}
 

@@ -13,6 +13,4 @@ public class PatientUpdateRequest {
     private String city;
     private String birthDate;
     private String phoneNumber;
-    private String profileImg;
-
 }

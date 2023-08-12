@@ -6,6 +6,7 @@ import com.medcard.entities.Patient;
 import com.medcard.mapper.DoctorMapper;
 import com.medcard.mapper.FormMapper;
 import com.medcard.mapper.PatientMapper;
+import com.medcard.repositories.PatientRepository;
 import com.medcard.repositories.UserRepository;
 import com.medcard.security.CurrentUserFinder;
 import com.medcard.services.UserService;
@@ -17,6 +18,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -35,7 +41,7 @@ public class PatientController {
     private final CurrentUserFinder currentUserFinder;
     private final UserService userService;
     private final UserRepository userRepository;
-
+    private final PatientRepository patientRepository;
 
     @GetMapping
     public String home() {
@@ -73,9 +79,23 @@ public class PatientController {
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute PatientUpdateRequest patient, Model model) {
+    public String update(@ModelAttribute PatientUpdateRequest patient, Model model,
+                         @RequestParam("profileImg")MultipartFile file,
+                         @RequestParam("imgName")String imgName) throws IOException {
         long id = currentUserFinder.getCurrentUserId();
-        patientServiceImpl.update(id, patient);
+
+        String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/IMAGES";
+
+        String imageUUID;
+        if(!file.isEmpty()) {
+            imageUUID = file.getOriginalFilename();
+            Path fileNameAndPath = Paths.get(uploadDir, imageUUID);
+            Files.write(fileNameAndPath, file.getBytes());
+        } else {
+            imageUUID = imgName;
+        }
+
+        patientServiceImpl.update(id, patient, imageUUID);
         return "redirect:/patient/profile";
     }
 
@@ -91,10 +111,10 @@ public class PatientController {
     }
 
     @GetMapping("/appointment/{doctorId}")
-    public String showAppointmentForm(Model model, @PathVariable Long doctorId) {
+    public String showAppointmentForm(Model model, @PathVariable Long doctorId, Principal principal) {
+        String patientUsername = principal.getName();
+        Patient patientDto = patientRepository.findByUserEmail(patientUsername);
         DoctorDto doctorDto = doctorMapper.convertToDto(doctorServiceImpl.getById(doctorId));
-        long patientId = currentUserFinder.getCurrentUserId();
-        Patient patientDto = patientServiceImpl.getById(patientId);
         List<String> availableTimes = appointmentService.generateAppointmentTimes();
         model.addAttribute("availableTimes", availableTimes);
         model.addAttribute("doctor", doctorDto);

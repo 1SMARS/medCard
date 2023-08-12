@@ -11,7 +11,7 @@ public interface PatientService {
 
     Patient getById(Long id);
 
-    Patient update(Long id, PatientUpdateRequest patientUpdateRequest);
+    Patient update(Long id, PatientUpdateRequest patientUpdateRequest, String imageUUID);
 
     List<Patient> getAll();
 

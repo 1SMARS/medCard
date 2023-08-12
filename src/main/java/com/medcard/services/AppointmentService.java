@@ -8,8 +8,6 @@ public interface AppointmentService {
 
     Appointment save(Long doctorId, Long patientId, Appointment appointment);
 
-//    Appointment update(Long id, Appointment appointment);
-
     void deleteForDoctor(Long id);
 
     List<Appointment> getAll();
@@ -18,5 +16,9 @@ public interface AppointmentService {
 
     List<Appointment> getAppointmentsByDoctor(Long doctorId);
 
-    boolean isTimeAvailable(String selectedTime);
+//    boolean isTimeBooked(Long doctorId, String appointmentTime);
+
+    List<String> generateAppointmentTimes();
+
+//    void bookAppointment(Long doctorId, String appointmentTime);
 }

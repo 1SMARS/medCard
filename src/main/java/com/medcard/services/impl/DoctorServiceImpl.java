@@ -78,7 +78,7 @@ public class DoctorServiceImpl implements DoctorService {
 
 
     @Override
-    public Doctor update(Long id, DoctorUpdateRequest updateDoctor) {
+    public Doctor update(Long id, DoctorUpdateRequest updateDoctor, String imageUUID) {
             Doctor doctor = getById(id);
             doctor.getUser().setFirstname(updateDoctor.getFirstname());
             doctor.getUser().setLastname(updateDoctor.getLastname());
@@ -86,9 +86,23 @@ public class DoctorServiceImpl implements DoctorService {
             doctor.getUser().setBirthDate(updateDoctor.getBirthDate());
             doctor.getUser().setPhoneNumber(updateDoctor.getPhoneNumber());
             doctor.setSpecialization(updateDoctor.getSpecialization());
-            doctor.getUser().setProfileImg(updateDoctor.getProfileImg());
+            doctor.getUser().setProfileImg(imageUUID);
             userRepository.save(doctor.getUser());
             doctorRepository.save(doctor);
             return doctor;
+    }
+
+    @Override
+    public Doctor updateForAdmin(Long id, DoctorUpdateRequest updateDoctor) {
+        Doctor doctor = getById(id);
+        doctor.getUser().setFirstname(updateDoctor.getFirstname());
+        doctor.getUser().setLastname(updateDoctor.getLastname());
+        doctor.getUser().setCity(updateDoctor.getCity());
+        doctor.getUser().setBirthDate(updateDoctor.getBirthDate());
+        doctor.getUser().setPhoneNumber(updateDoctor.getPhoneNumber());
+        doctor.setSpecialization(updateDoctor.getSpecialization());
+        userRepository.save(doctor.getUser());
+        doctorRepository.save(doctor);
+        return doctor;
     }
 }

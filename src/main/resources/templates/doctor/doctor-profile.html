@@ -159,6 +159,10 @@
       margin-top: 100px;
     }
 
+    .image-left img {
+      border-radius: 50%;
+    }
+
     .label-text {
       font-size: 14px;
       padding-top: 10px;
@@ -181,7 +185,7 @@
 
 <div class="container-fluid">
   <div class="image-left">
-    <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" width="150" height="150">
+    <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" th:src="@{${'/IMAGES/' + doctor.profileImg}}" width="150" height="150">
   </div>
 
   <div class="center-container">

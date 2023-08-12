@@ -13,7 +13,9 @@ public interface DoctorService {
 
      void deleteById(Long id);
 
-     Doctor update(Long id, DoctorUpdateRequest doctorUpdateRequest);
+     Doctor update(Long id, DoctorUpdateRequest doctorUpdateRequest, String imageUUID);
+
+     Doctor updateForAdmin(Long id, DoctorUpdateRequest updateDoctor);
 
      Doctor getById(Long id);
 

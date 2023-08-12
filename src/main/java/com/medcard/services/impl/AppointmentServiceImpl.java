@@ -8,10 +8,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.print.Doc;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +18,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final HistoryRepository historyRepository;
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
+
+    private Map<Long, Set<String>> bookedAppointments = new HashMap<>(); // Simulated data store
 
     @Override
     public Appointment save(Long doctorId, Long patientId, Appointment appointment) {
@@ -56,13 +55,6 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.save(appointment);
     }
 
-//    @Override
-//    public Appointment update(Long id, Appointment updateAppointment) {
-//        Appointment appointment = getById(id);
-//        appointment.setAppointmentTime(updateAppointment.getAppointmentTime());
-//
-//    }
-
     @Override
     public void deleteForDoctor(Long id) {
         appointmentRepository.deleteById(id);
@@ -87,17 +79,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     public List<String> generateAppointmentTimes() {
         return Arrays.asList("10:00", "11:30", "12:40", "13:20", "14:50", "15:40", "16:20");
-    }
-
-    public boolean isTimeAvailable(String selectedTime) {
-        List<Appointment> existingAppointments = (List<Appointment>) appointmentRepository.findAll();
-
-        for (Appointment appointment : existingAppointments) {
-            if (appointment.getAppointmentTime().equals(selectedTime)) {
-                return false;
-            }
-        }
-        return true;
     }
 
 }

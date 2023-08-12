@@ -57,21 +57,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Doctor update(Long id, DoctorUpdateRequest updateDoctor) {
-        Doctor doctor = doctorRepository.findById(id).orElseThrow();
-        doctor.getUser().setFirstname(updateDoctor.getFirstname());
-        doctor.getUser().setLastname(updateDoctor.getLastname());
-        doctor.getUser().setCity(updateDoctor.getCity());
-        doctor.getUser().setBirthDate(updateDoctor.getBirthDate());
-        doctor.getUser().setPhoneNumber(updateDoctor.getPhoneNumber());
-        doctor.setSpecialization(updateDoctor.getSpecialization());
-        doctor.getUser().setProfileImg(updateDoctor.getProfileImg());
-        doctorRepository.save(doctor);
-        return doctor;
-    }
-
-
-    @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
     }

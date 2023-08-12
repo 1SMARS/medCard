@@ -17,5 +17,4 @@ public class DoctorUpdateRequest {
     private String birthDate;
     private String phoneNumber;
     private String specialization;
-    private String profileImg;
 }

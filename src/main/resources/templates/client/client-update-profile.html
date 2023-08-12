@@ -200,7 +200,7 @@
         <h2>Profile</h2>
 
         <div class="container">
-            <form class="mt-5" method="post" th:action="@{/patient/update}" th:object="${patient}">
+            <form class="mt-5" method="post" th:action="@{/patient/update}" enctype="multipart/form-data" th:object="${patient}">
                 <div class="form-group">
                     <label for="email" class="label-text"> Email</label>
                     <input readonly class="form-control" type="email" id="email" name="email" required="required" th:field="${patient.email}">
@@ -221,19 +221,19 @@
                     <label for="city" class="label-text">City</label>
                     <input class="form-control" type="text" id="city" name="city" required="required" th:field="${patient.city}">
                 </div>
-                <div class="form-group">
+                <div class="form-group" style="margin-bottom: 10px">
                     <label for="phoneNumber" class="label-text">Phone number</label>
                     <input  class="form-control" type="text" id="phoneNumber" name="phoneNumber" required="required" th:field="${patient.phoneNumber}">
                 </div>
+                <div class="form-group">
+                    <label for="profileImg" class="label-text">Profile Image</label>
+                    <input type="file" name="profileImg" accept="image/jpeg, image/png"  id="profileImg"/>
+                </div>
+                <input type="hidden" id="imgName" name="imgName" th:value="${patient.profileImg}">
                 <button type="submit" class="button-submit">Submit</button>
             </form>
         </div>
     </div>
-<!--    <div class="image-right">-->
-<!--        <a href="/client/update/profile">-->
-<!--            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827951.png" width="35" height="35" alt="Edit profile">-->
-<!--        </a>-->
-<!--    </div>-->
 </div>
 </body>
 </html>
