@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Help</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+
+    <style>
+        .container {
+            padding: 20px;
+            margin-right: 10%;
+            margin-left: 10%;
+            min-width: 850px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        .image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    </style>
+</head>
+<body>
+<ul th:replace="~{navbar-layout :: adminNavBar}"></ul>
+
+<div class="container">
+    <div class="center-content">
+        <p class="center-text">Punctuality: It is crucial to arrive on time for your appointment. In case of non-arrival, there may be consequences, such as a fine or the need to reschedule. We value the time of both our doctors and patients, so please plan accordingly and avoid any unnecessary delays.<br>
+            <br>
+            Early Arrival: We recommend arriving 10 to 5 minutes before your scheduled appointment. This allows for a smoother check-in process and ensures that you can enter the doctor's office promptly. Please consider potential traffic or other unforeseen circumstances when planning your journey.<br>
+            <br>
+            Check-in Procedure: Upon arrival, please approach the reception desk and inform the staff of your appointment. They will guide you through the check-in process and provide any necessary forms or information.<br>
+            <br>
+            Preparedness: To make the most of your appointment, come prepared with any relevant medical history, documentation, or questions you may have for the doctor. This will help facilitate a productive and comprehensive consultation.<br>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

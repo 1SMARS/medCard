@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+
+    <style>
+        .container {
+            margin-top: 50px;
+            min-width: 900px;
+        }
+
+        .custom-table {
+            width: 90%;
+            margin-left: auto;
+            margin-right: auto;
+            border-collapse: collapse;
+            font-family: Arial, sans-serif;
+        }
+
+
+
+        .custom-table th,
+        .custom-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .custom-table td:first-child,
+        .custom-table th:first-child {
+            border-left: none;
+        }
+
+        .custom-table td:last-child,
+        .custom-table th:last-child {
+            border-right: none;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 6px 15px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: gray;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: black;
+
+        }
+    </style>
+</head>
+<body>
+<ul th:replace="~{navbar-layout :: doctorNavBar}"></ul>
+<div class="container mt-5">
+    <table class="custom-table">
+        <thead>
+        <tr>
+            <th>#Id</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th>Specialization</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="item:${doctors}">
+            <td th:text="${item.id}"></td>
+            <td th:text="${item.firstname}"></td>
+            <td th:text="${item.lastname}"></td>
+            <td th:text="${item.specialization}"></td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

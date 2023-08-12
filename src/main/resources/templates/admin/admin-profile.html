@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/registration.css}">
+
+    <style>
+
+        ul {
+            list-style-type: none;
+            margin-top: 8px;
+            padding: 0;
+            overflow: hidden;
+            align-items: center;
+            min-width: 900px;
+
+        }
+
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            float: left;
+        }
+
+        .nav-item a {
+            display: block;
+            color: black;
+            font-size: 15px;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar-brand a {
+            color: black;
+            text-decoration: none;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 15px;
+            padding: 14px 15px 14px 16px;
+            margin-left: 15px;
+        }
+
+
+        .nav-item a:hover {
+            color: orangered !important;
+            transition: .5s;
+        }
+
+        #active-item {
+            color: orangered;
+        }
+
+        .nav-item-logout {
+            float: right;
+            margin-right: 30px;
+            font-size: 15px;
+            padding: 14px 16px;
+        }
+
+        .nav-item-logout a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .nav-item-profile a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .nav-item-profile {
+            float: right;
+            font-size: 15px;
+            padding: 14px 16px;
+        }
+
+        .nav-item-profile a:hover {
+            color: orangered !important;
+            transition: .5s;
+        }
+
+        .nav-item-logout a:hover {
+            color: orangered !important;
+            transition: .5s;
+        }
+
+        .navbar-right a:hover {
+            color: orangered !important;
+            transition: .5s;
+            text-decoration: none;
+        }
+
+        /* New styles for profile image and circular form layout */
+        .profile-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .profile-image img {
+            width: 170px;
+            height: 170px;
+            background: #dddddd;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li class="navbar-brand"><a href="/admin"> Medical Card</a></li>
+    <li class="nav-item"><a href="/admin/statistics">Statistics</a></li>
+    <li class="nav-item"><a href="/admin/doctors">Doctors</a></li>
+    <li class="nav-item"><a href="/admin/help">Help</a></li>
+    <li class="nav-item-logout"><a href="/logout">Logout</a></li>
+    <li class="nav-item-profile"><a href="/admin/profile">Profile</a></li>
+</ul>
+
+<div class="profile-image">
+    <img src="https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png" alt="Photo">
+</div>
+
+<div class="container">
+    <form class="mt-5" th:action="@{/admin/profile}" th:object="${admin}" method="post">
+        <div class="form-group">
+            <input placeholder="Email" class="form-control" type="email" id="email" name="email" required="required" th:field="${admin.email}">
+        </div>
+        <div class="form-group">
+            <input placeholder="City" class="form-control" type="text" id="city" name="city" required="required" th:field="${admin.city}">
+        </div>
+        <div class="form-group">
+            <input placeholder="First Name" class="form-control" type="text" id="firstName" name="firstName" required="required" th:field="${admin.firstname}">
+        </div>
+        <div class="form-group">
+            <input placeholder="BirthDate" class="form-control" type="date" id="birthDate" name="birthDate" required="required" th:field="${admin.birthDate}">
+        </div>
+        <div class="form-group">
+            <input placeholder="Last Name" class="form-control" type="text" id="lastName" name="lastName" required="required" th:field="${admin.lastname}">
+        </div>
+        <div class="form-group">
+            <input placeholder="Phone Number" class="form-control" type="text" id="phoneNumber" name="phoneNumber" required="required" th:field="${admin.phoneNumber}">
+        </div>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>

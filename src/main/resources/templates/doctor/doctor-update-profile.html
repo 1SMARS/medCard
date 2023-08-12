@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<!--        <link rel="stylesheet" type="text/css" th:href="@{/CSS/registration.css}">-->
+
+    <style>
+
+        ul {
+            list-style-type: none;
+            margin-top: 8px;
+            padding: 0;
+            overflow: hidden;
+            align-items: center;
+            min-width: 900px;
+
+        }
+
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            background-color: white;
+            margin: 0;
+            padding: 0;
+        }
+
+        li {
+            float: left;
+        }
+
+        .nav-item a {
+            display: block;
+            color: black;
+            font-size: 15px;
+            padding: 14px 16px;
+            text-decoration: none;
+        }
+
+        .navbar-brand a {
+            color: black;
+            text-decoration: none;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 15px;
+            padding: 14px 15px 14px 16px;
+            margin-left: 15px;
+        }
+
+
+        .nav-item a:hover {
+            color: orangered !important;
+            transition: .5s;
+        }
+
+        #active-item {
+            color: orangered;
+        }
+
+        .nav-item-logout {
+            float: right;
+            margin-right: 30px;
+            font-size: 15px;
+            padding: 14px 16px;
+        }
+
+        .nav-item-logout a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .nav-item-profile a {
+            color: black;
+            text-decoration: none;
+        }
+
+        .nav-item-profile {
+            float: right;
+            font-size: 15px;
+            padding: 14px 16px;
+        }
+
+        .nav-item-profile a:hover {
+            color: orangered !important;
+            transition: .5s;
+        }
+
+        .nav-item-logout a:hover {
+            color: orangered !important;
+            transition: .5s;
+        }
+
+        .navbar-right a:hover {
+            color: orangered !important;
+            transition: .5s;
+            text-decoration: none;
+        }
+
+        /* New styles for profile image and circular form layout */
+
+        .form-control {
+            border-radius: 8px;
+            height: 34px;
+        }
+
+        .form-control:read-only {
+            background-color: white;
+
+        }
+
+        .form-group {
+            margin: 0;
+        }
+
+
+
+
+
+
+        .container-fluid {
+            display: flex;
+            justify-content: space-between;
+            width: 70%;
+            min-width: 700px;
+            margin-left: 150px;
+            align-items: center;
+            height: 10vh; /* Adjust as needed */
+        }
+
+        .center-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            width: 70%;
+            height: auto;
+            justify-content: start;
+            align-items: start;
+        }
+
+        .image-right {
+            margin-top: 60px;
+        }
+
+        .image-left {
+            margin-left: 0;
+            margin-top: 100px;
+        }
+
+        .label-text {
+            font-size: 14px;
+            padding-top: 10px;
+        }
+
+
+        .button-submit {
+            background: lightgray;
+            color: black;
+            border-radius: 5px;
+            border: none;
+            padding: 4px 20px;
+            margin-top: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<ul th:fragment="doctorNavBar">
+    <li class="navbar-brand"><a href="/doctor"> Medical Card</a></li>
+    <li class="nav-item"><a  href="/doctor/appointment">Appointment</a></li>
+    <li class="nav-item"><a href="/doctor/doctors">Doctors</a></li>
+    <li class="nav-item"><a href="/doctor/help">Help</a></li>
+    <li class="nav-item-logout"><a href="/logout">Logout</a></li>
+    <li class="nav-item-profile"><a href="/doctor/profile">Profile</a></li>
+</ul>
+
+<div class="container-fluid">
+    <div class="image-left">
+        <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" width="150" height="150">
+    </div>
+
+
+    <div class="center-container">
+
+        <h2>Profile</h2>
+
+        <div class="container">
+            <form class="mt-5" method="post" th:action="@{/doctor/update}" th:object="${doctor}">
+                <div class="form-group">
+                    <label for="email" class="label-text"> Email</label>
+                    <input readonly class="form-control" type="email" id="email" name="email" required="required" th:field="${doctor.email}">
+                </div>
+                <div class="form-group">
+                    <label for="firstName" class="label-text">Name</label>
+                    <input  class="form-control" type="text" id="firstName" name="firstName" required="required" th:field="${doctor.firstname}">
+                </div>
+                <div class="form-group">
+                    <label for="lastName" class="label-text">Surname</label>
+                    <input  class="form-control" type="text" id="lastName" name="lastName" required="required" th:field="${doctor.lastname}">
+                </div>
+                <div class="form-group">
+                    <label for="city" class="label-text">City</label>
+                    <input class="form-control" type="text" id="city" name="city" required="required" th:field="${doctor.city}">
+                </div>
+                <div class="form-group">
+                    <label for="birthDate" class="label-text">Birthday</label>
+                    <input  class="form-control" type="date" id="birthDate" name="birthDate" required="required" th:field="${doctor.birthDate}">
+                </div>
+                <div class="form-group">
+                    <label for="phoneNumber" class="label-text">Phone number</label>
+                    <input  class="form-control" type="text" id="phoneNumber" name="phoneNumber" required="required" th:field="${doctor.phoneNumber}">
+                </div>
+                <div class="form-group">
+                    <label for="specialization" class="label-text">Specialization</label>
+                    <input  class="form-control" type="text" id="specialization" name="specialization" required="required" th:field="${doctor.specialization}">
+                </div>
+                <button type="submit" class="button-submit">Submit</button>
+            </form>
+        </div>
+    </div>
+<!--    <div class="image-right">-->
+<!--        <a href="/doctor/update/profile">-->
+<!--            <img src="https://cdn-icons-png.flaticon.com/512/1827/1827951.png" width="35" height="35" alt="Edit profile">-->
+<!--        </a>-->
+<!--    </div>-->
+</div>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .center {
+            /* Styles for the form section */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            border-radius: 10px;
+            background-color: #fff; /* Add background color to the form section */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 350px;
+        }
+
+        label, input, textarea {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+        }
+
+        .label-text {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 6px 15px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: gray;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: black;
+        }
+
+
+    </style>
+</head>
+<body>
+<ul th:replace="~{navbar-layout :: doctorNavBar}"></ul>
+<div class="center">
+    <form th:object="${form}" th:action="@{/doctor/fill/form/{patientId}(patientId=${patient.id})}" method="post">
+
+        <label for="disease" class="label-text">Disease</label>
+        <input type="text" th:field="*{disease}" id="disease" name="disease">
+
+        <label for="description" class="label-text">Description</label>
+        <textarea th:field="*{description}" id="description" name="description" rows="8"></textarea>
+
+        <!-- Add any other form fields here -->
+
+        <input type="submit" value="Submit">
+    </form>
+</div>
+</body>
+</html>

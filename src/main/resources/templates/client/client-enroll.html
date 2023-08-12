@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Doctors</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+    <style>
+        body {
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center items horizontally */
+            margin-top: 50px;
+            width: 100%;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            width: 60%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        td:first-child, th:first-child {
+            border-left: none;
+        }
+
+        td:last-child, th:last-child {
+            border-right: none;
+        }
+
+        .time-column {
+            width: 70%;
+        }
+
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+
+        input[type="submit"] {
+            margin-top: 10px;
+            padding: 6px 15px;
+            font-size: 12px;
+            border-radius: 4px;
+            background-color: gray;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: black;
+        }
+
+    </style>
+
+</head>
+<body>
+<ul th:replace="~{navbar-layout :: clientNavBar}"></ul>
+<div class="container">
+    <div class="text-container">
+        <p id="text" th:text="${'You are enrolling to: doctor ' + doctor.firstname + ' ' + doctor.lastname}">You are enrolling to: (Doctor's name)</p>
+    </div>
+    <div class="table-container">
+        <form th:action="@{/patient/create/appointment/{doctorId}(doctorId=${doctor.id})}"
+              method="post" enctype="application/x-www-form-urlencoded" th:object="${appointment}">
+            <input type="hidden" name="doctorId" th:value="${doctor.id}">
+
+            <table>
+                <tbody>
+                <tr th:each="time : ${availableTimes}">
+                    <td th:text="${time}" class="time-column"></td>
+                    <td>
+                        <input type="radio" th:name="appointmentTime" th:value="${time}" />
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <input type="submit" value="Make Appointment">
+        </form>
+    </div>
+</div>
+</body>
+</html>

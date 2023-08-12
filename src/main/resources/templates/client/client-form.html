@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+
+    <style>
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .center {
+            /* Styles for the form section */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: none;
+            padding: 20px;
+            width: 100%;
+            border-radius: 10px;
+            background-color: #fff; /* Add background color to the form section */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            width: 350px;
+        }
+
+        label, input, textarea {
+            margin-bottom: 10px;
+        }
+
+        input[type="text"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+        }
+
+        .label-text {
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+
+    </style>
+</head>
+<body>
+    <ul th:replace="~{navbar-layout :: clientNavBar}"></ul>
+<div class="center">
+    <form th:each="item:${form}">
+        <label for="disease" class="label-text">Disease</label>
+        <input readonly th:value="${item.disease}" type="text" id="disease" name="disease">
+
+        <label for="description" class="label-text">Description</label>
+        <textarea readonly th:text="${item.description}" id="description" name="description" rows="8"></textarea>
+    </form>
+</div>
+</body>
+</html>

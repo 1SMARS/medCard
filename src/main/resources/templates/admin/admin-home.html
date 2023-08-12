@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Home</title>
+	<link rel="stylesheet" type="text/css" th:href="@{/CSS/account-layout.css}">
+	<link rel="stylesheet" type="text/css" th:href="@{/CSS/navigation.css}">
+</head>
+<body>
+<ul th:replace="~{navbar-layout :: adminNavBar}"></ul>
+
+<div class="container">
+	<div class="center-content">
+		<img src="/IMAGES/patient.png" class="center-image" width="200" height="200">
+		<p class="center-text">The Medical Card is a comprehensive web-based application designed to streamline healthcare<br>
+			management by facilitating patient appointment scheduling, maintaining medical records,<br>
+			and providing access to a directory of healthcare professionals.<br>
+			This system aims to enhance the efficiency and quality of healthcare services<br>
+			by leveraging technology to simplify administrative tasks,<br>
+			improve patient-doctor and ensure accurate and accessible medical information.</p>
+	</div>
+</div>
+
+</body>
+</html>
