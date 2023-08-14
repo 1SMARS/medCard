@@ -21,11 +21,14 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment save(Long doctorId, Long patientId, Appointment appointment) {
+
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
         Patient patient = patientRepository.findById(patientId).orElseThrow();
 
         List<Appointment> appointments = new ArrayList<>();
         List<Patient> patients = new ArrayList<>();
+        List<Doctor> doctors = new ArrayList<>();
+        doctors.add(doctor);
 
         appointments.add(appointment);
         patients.add(patient);
@@ -34,7 +37,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         appointment.setDoctor(doctor);
 
         doctor.setAppointments(appointments);
-        patient.setDoctor(doctor);
+        patient.setDoctors(doctors);
 
         doctor.setPatients(patients);
         appointment.setAppointmentTime(appointment.getAppointmentTime());
@@ -47,11 +50,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         history.setSpecialization(doctor.getSpecialization());
 
         patient.setHistory(history);
-
-        appointment.setAvailable(false);
         historyRepository.save(history);
 
         return appointmentRepository.save(appointment);
+    }
+
+    public boolean isTimeAvailable(String time, Long doctorId) {
+        List<Appointment> appointments = appointmentRepository.findByDoctorIdAndAppointmentTime(doctorId, time);
+        return appointments.isEmpty();
     }
 
     @Override

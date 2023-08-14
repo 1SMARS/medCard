@@ -12,4 +12,5 @@ import java.util.List;
 public interface AppointmentRepository extends CrudRepository<Appointment, Long> {
 
     List<Appointment> findByDoctorId(Long doctorId);
+    List<Appointment> findByDoctorIdAndAppointmentTime(Long doctorId, String time);
 }

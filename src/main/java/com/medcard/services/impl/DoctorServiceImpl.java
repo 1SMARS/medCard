@@ -66,7 +66,7 @@ public class DoctorServiceImpl implements DoctorService {
 
             if (patients != null) {
                 for (Patient patient : patients) {
-                    patient.setDoctor(null);
+                    patient.getDoctors().remove(doctor);
                     patientRepository.save(patient);
                 }
                 doctor.setPatients(null);

@@ -26,7 +26,7 @@ public class Doctor {
     @OneToOne(mappedBy = "doctor", cascade = CascadeType.ALL)
     private User user;
 
-    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH,CascadeType.DETACH, CascadeType.PERSIST}, mappedBy = "doctor")
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH,CascadeType.DETACH, CascadeType.PERSIST}, mappedBy = "doctors")
     private List<Patient> patients;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor")

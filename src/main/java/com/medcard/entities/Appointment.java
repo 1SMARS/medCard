@@ -2,6 +2,8 @@ package com.medcard.entities;
 import lombok.*;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 @Getter
@@ -15,8 +17,6 @@ public class Appointment {
     private Long id;
 
     private String appointmentTime;
-
-    private Boolean available;
 
     @ManyToOne
     private Doctor doctor;

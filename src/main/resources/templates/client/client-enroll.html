@@ -87,7 +87,10 @@
                 <tr th:each="time : ${availableTimes}">
                     <td th:text="${time}" class="time-column"></td>
                     <td>
-                        <input type="radio" th:name="appointmentTime" th:value="${time}" />
+                        <span th:if="${appointmentService.isTimeAvailable(time, doctor.id)}">
+                            <input type="radio" th:name="appointmentTime" th:value="${time}" />
+                        </span>
+                        <span th:unless="${appointmentService.isTimeAvailable(time, doctor.id)}">Unavailable</span>
                     </td>
                 </tr>
                 </tbody>

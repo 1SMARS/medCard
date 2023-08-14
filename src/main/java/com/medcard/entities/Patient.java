@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -18,8 +20,8 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private Doctor doctor;
+    @ManyToMany
+    private List<Doctor> doctors;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "patient")
     private User user;
