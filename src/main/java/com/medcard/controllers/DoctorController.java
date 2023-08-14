@@ -1,10 +1,11 @@
 package com.medcard.controllers;
 
 import com.medcard.dto.*;
+import com.medcard.entities.Doctor;
 import com.medcard.entities.Form;
 import com.medcard.entities.Patient;
 import com.medcard.mapper.*;
-import com.medcard.security.CurrentDoctorFinder;
+import com.medcard.repositories.DoctorRepository;
 import com.medcard.services.*;
 import com.medcard.services.impl.DoctorServiceImpl;
 import lombok.AllArgsConstructor;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -30,7 +32,7 @@ public class DoctorController {
 	private final FormService formService;
 	private final AppointmentService appointmentService;
 	private final DoctorMapper doctorMapper;
-	private final CurrentDoctorFinder currentUserFinder;
+	private final DoctorRepository doctorRepository;
 
 	@GetMapping
 	public String home() {
@@ -50,26 +52,29 @@ public class DoctorController {
 	}
 
 	@GetMapping("/profile")
-	public String doctorProfile(Model model) {
-		long doctorId = currentUserFinder.getCurrentUserId();
-		DoctorDto doctorDto = doctorMapper.convertToDto(doctorService.getById(doctorId));
+	public String doctorProfile(Model model, Principal principal) {
+		String doctorUsername = principal.getName();
+		Doctor doctor = doctorRepository.findByUserEmail(doctorUsername);
+		DoctorDto doctorDto = doctorMapper.convertToDto(doctorService.getById(doctor.getId()));
 		model.addAttribute("doctor", doctorDto);
 		return "doctor/doctor-profile";
 	}
 
 	@GetMapping("/update/profile")
-	public String doctorProfileUpdate(Model model) {
-		long doctorId = currentUserFinder.getCurrentUserId();
-		DoctorDto doctorDto = doctorMapper.convertToDto(doctorService.getById(doctorId));
+	public String doctorProfileUpdate(Model model, Principal principal) {
+		String doctorUsername = principal.getName();
+		Doctor doctor = doctorRepository.findByUserEmail(doctorUsername);
+		DoctorDto doctorDto = doctorMapper.convertToDto(doctorService.getById(doctor.getId()));
 		model.addAttribute("doctor", doctorDto);
 		return "doctor/doctor-update-profile";
 	}
 
 	@PostMapping("/update")
-	public String update(@ModelAttribute DoctorUpdateRequest doctor, Model model,
+	public String update(@ModelAttribute DoctorUpdateRequest updateRequest, Model model,
 						 @RequestParam("profileImg") MultipartFile file,
-						 @RequestParam("imgName")String imgName) throws IOException {
-		long id = currentUserFinder.getCurrentUserId();
+						 @RequestParam("imgName")String imgName, Principal principal) throws IOException {
+		String doctorUsername = principal.getName();
+		Doctor doctor = doctorRepository.findByUserEmail(doctorUsername);
 
 		String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/IMAGES";
 
@@ -81,7 +86,7 @@ public class DoctorController {
 		} else {
 			imageUUID = imgName;
 		}
-		doctorService.update(id, doctor, imageUUID);
+		doctorService.update(doctor.getId(), updateRequest, imageUUID);
 		return "redirect:/doctor/profile";
 	}
 
@@ -115,9 +120,10 @@ public class DoctorController {
 
 
 	@GetMapping(value = "/appointments")
-	public String appointmentsByDoctorId(Model model) {
-		Long doctorId = currentUserFinder.getCurrentUserId();
-		model.addAttribute("appointments", appointmentService.getAppointmentsByDoctor(doctorId));
+	public String appointmentsByDoctorId(Model model, Principal principal) {
+		String doctorUsername = principal.getName();
+		Doctor doctor = doctorRepository.findByUserEmail(doctorUsername);
+		model.addAttribute("appointments", appointmentService.getAppointmentsByDoctor(doctor.getId()));
 		return "doctor/appointments";
 	}
 

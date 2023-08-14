@@ -4,26 +4,24 @@ import com.medcard.dto.*;
 import com.medcard.entities.Appointment;
 import com.medcard.entities.Patient;
 import com.medcard.mapper.DoctorMapper;
-import com.medcard.mapper.FormMapper;
 import com.medcard.mapper.PatientMapper;
 import com.medcard.repositories.PatientRepository;
-import com.medcard.repositories.UserRepository;
-import com.medcard.security.CurrentUserFinder;
-import com.medcard.services.UserService;
 import com.medcard.services.impl.*;
 import lombok.AllArgsConstructor;
+import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Controller
 @AllArgsConstructor
@@ -36,11 +34,7 @@ public class PatientController {
     private final AppointmentServiceImpl appointmentService;
     private final HistoryServiceImpl historyService;
     private final PatientMapper patientMapper;
-    private final FormMapper formMapper;
     private final DoctorMapper doctorMapper;
-    private final CurrentUserFinder currentUserFinder;
-    private final UserService userService;
-    private final UserRepository userRepository;
     private final PatientRepository patientRepository;
 
     @GetMapping
@@ -63,26 +57,29 @@ public class PatientController {
     }
 
     @GetMapping("/profile")
-    public String showProfile(Model model) {
-        long id = currentUserFinder.getCurrentUserId();
-        PatientDto patientDto = patientMapper.apply(patientServiceImpl.getById(id));
+    public String showProfile(Model model, Principal principal) {
+        String patientUsername = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(patientUsername);
+        PatientDto patientDto = patientMapper.apply(patientServiceImpl.getById(patient.getId()));
         model.addAttribute("patient", patientDto);
         return "client/client-profile";
     }
 
     @GetMapping("/profile/edit")
-    public String showUpdateProfile(Model model) {
-        long id = currentUserFinder.getCurrentUserId();
-        PatientDto patientDto = patientMapper.apply(patientServiceImpl.getById(id));
+    public String showUpdateProfile(Model model, Principal principal) {
+        String patientUsername = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(patientUsername);
+        PatientDto patientDto = patientMapper.apply(patientServiceImpl.getById(patient.getId()));
         model.addAttribute("patient", patientDto);
         return "client/client-update-profile";
     }
 
     @PostMapping("/update")
-    public String update(@ModelAttribute PatientUpdateRequest patient, Model model,
+    public String update(@ModelAttribute PatientUpdateRequest updateRequest, Model model,
                          @RequestParam("profileImg")MultipartFile file,
-                         @RequestParam("imgName")String imgName) throws IOException {
-        long id = currentUserFinder.getCurrentUserId();
+                         @RequestParam("imgName")String imgName, Principal principal) throws IOException {
+        String patientUsername = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(patientUsername);
 
         String uploadDir = System.getProperty("user.dir") + "/src/main/resources/static/IMAGES";
 
@@ -95,18 +92,19 @@ public class PatientController {
             imageUUID = imgName;
         }
 
-        patientServiceImpl.update(id, patient, imageUUID);
+        patientServiceImpl.update(patient.getId(), updateRequest, imageUUID);
         return "redirect:/patient/profile";
     }
 
     @GetMapping("/get/form")
-    public String getFormByPatientId(Model model) {
-        Long patientId = currentUserFinder.getCurrentUserId();
+    public String getFormByPatientId(Model model, Principal principal) {
+        String patientUsername = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(patientUsername);
 
-        if (formService.getFormByPatientId(patientId) == null) {
+        if (formService.getFormByPatientId(patient.getId()) == null) {
             return "client/client-empty-form";
         }
-        model.addAttribute("form", formService.getFormByPatientId(patientId));
+        model.addAttribute("form", formService.getFormByPatientId(patient.getId()));
         return "client/client-form";
     }
 
@@ -125,16 +123,20 @@ public class PatientController {
     }
 
     @PostMapping("/create/appointment/{doctorId}")
-    public String createAppointment(@PathVariable Long doctorId, Model model, Appointment appointment) {
-        Long patientId = currentUserFinder.getCurrentUserId();
-        appointmentService.save(doctorId, patientId, appointment);
+    public String createAppointment(@PathVariable Long doctorId, Model model,
+                                    Appointment appointment, Principal principal) {
+
+        String patientUsername = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(patientUsername);
+        appointmentService.save(doctorId, patient.getId(), appointment);
         return "redirect:/patient";
     }
 
     @GetMapping("/histories")
-    public String showAllHistories(Model model) {
-        Long patientId = currentUserFinder.getCurrentUserId();
-        model.addAttribute("histories", historyService.getAll(patientId));
+    public String showAllHistories(Model model, Principal principal) {
+        String patientUsername = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(patientUsername);
+        model.addAttribute("histories", historyService.getAll(patient.getId()));
         return "client/client-histories";
     }
 

@@ -73,7 +73,7 @@
         <tr th:each="item:${histories}">
             <td th:text="${item.doctorName}"></td>
             <td th:text="${item.doctorSurname}"></td>
-            <td th:text="${item.appointmentTime.substring(1, 6)}"></td>
+            <td th:text="${item.appointmentTime}"></td>
             <td th:text="${item.specialization}"></td>
             <td>
                 <a class="button" th:href="@{/patient/get/form}">

@@ -4,8 +4,6 @@ import com.medcard.entities.Doctor;
 import com.medcard.entities.User;
 import com.medcard.mapper.DoctorMapper;
 import com.medcard.repositories.DoctorRepository;
-import com.medcard.repositories.UserRepository;
-import com.medcard.security.CurrentUserFinder;
 import com.medcard.services.DoctorService;
 import com.medcard.services.UserService;
 import lombok.AllArgsConstructor;
@@ -13,12 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Controller
@@ -30,8 +23,6 @@ public class AdminController {
 	private final DoctorService doctorServiceImpl;
 	private final DoctorRepository doctorRepository;
 	private final DoctorMapper doctorMapper;
-	private final UserRepository userRepository;
-	private final CurrentUserFinder currentUserFinder;
 	private final UserService userService;
 
 	@GetMapping
@@ -88,14 +79,6 @@ public class AdminController {
 
 		doctorServiceImpl.updateForAdmin(id, doctor);
 		return "redirect:/admin/doctors";
-	}
-
-	@GetMapping("/profile")
-	public String adminProfile(Model model) {
-		long id = currentUserFinder.getCurrentUserId();
-		User user = userRepository.findById(id).orElseThrow();
-		model.addAttribute("admin", user);
-		return "admin/admin-profile";
 	}
 
 	@GetMapping("/help")

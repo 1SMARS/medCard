@@ -161,6 +161,8 @@
 
         .image-left img {
             border-radius: 50%;
+            background-image: url('https://img.freepik.com/free-icon/user_318-563642.jpg?w=360');
+            background-size: cover;
         }
 
         .label-text {
@@ -185,7 +187,7 @@
 
     <div class="container-fluid">
         <div class="image-left">
-            <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" th:src="@{${'/IMAGES/' + patient.profileImg}}" width="150" height="150">
+            <img th:src="@{${'/IMAGES/' + patient.profileImg}}" src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" width="150" height="150">
         </div>
 
         <div class="center-container">

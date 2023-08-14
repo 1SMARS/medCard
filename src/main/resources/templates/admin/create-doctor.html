@@ -9,7 +9,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-    <link rel="stylesheet" type="text/css" th:href="@{/CSS/registration.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/CSS/login.css}">
 
     <style>
 
@@ -102,18 +102,14 @@
             text-decoration: none;
         }
 
-        /* New styles for profile image and circular form layout */
-        .profile-image {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .container {
+            width: 30%;
         }
 
-        .profile-image img {
-            width: 170px;
-            height: 170px;
-            background: #dddddd;
-            border-radius: 50%;
+        .btn {
+            background: black;
+            color: white;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -124,14 +120,10 @@
     <li class="nav-item"><a href="/admin/doctors">Doctors</a></li>
     <li class="nav-item"><a href="/admin/help">Help</a></li>
     <li class="nav-item-logout"><a href="/logout">Logout</a></li>
-    <li class="nav-item-profile"><a href="/admin/profile">Profile</a></li>
 </ul>
 
-<div class="profile-image">
-    <img src="https://www.freeiconspng.com/thumbs/profile-icon-png/profile-icon-9.png" alt="Photo">
-</div>
-
 <div class="container">
+    <h2 class="text-center">Create account</h2>
     <form class="mt-5" th:action="@{/admin/doctor/save}" th:object="${newAccount}" method="POST">
 
         <div class="form-group">
@@ -149,7 +141,7 @@
         <div class="form-group">
             <input placeholder="Specialization" class="form-control" type="text" id="specialization" name="specialization" required="required" th:field="${doctor.specialization}">
         </div>
-        <button type="submit">Submit</button>
+        <button class="btn btn-block" type="submit">Submit</button>
     </form>
 </div>
 </body>

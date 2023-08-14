@@ -16,8 +16,7 @@ public class AppointmentDto {
 
     private Long id;
 
-    @ElementCollection
-    private List<String> appointmentTime;
+    private String appointmentTime;
 
     private PatientDto patientDto;
 }

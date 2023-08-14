@@ -19,11 +19,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final DoctorRepository doctorRepository;
     private final PatientRepository patientRepository;
 
-    private Map<Long, Set<String>> bookedAppointments = new HashMap<>(); // Simulated data store
-
     @Override
     public Appointment save(Long doctorId, Long patientId, Appointment appointment) {
-
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
         Patient patient = patientRepository.findById(patientId).orElseThrow();
 
@@ -50,6 +47,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         history.setSpecialization(doctor.getSpecialization());
 
         patient.setHistory(history);
+
+        appointment.setAvailable(false);
         historyRepository.save(history);
 
         return appointmentRepository.save(appointment);
@@ -80,7 +79,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<String> generateAppointmentTimes() {
         return Arrays.asList("10:00", "11:30", "12:40", "13:20", "14:50", "15:40", "16:20");
     }
-
 }
 
 

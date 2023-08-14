@@ -1,7 +1,6 @@
 package com.medcard.entities;
 import lombok.*;
 import jakarta.persistence.*;
-import java.util.List;
 
 
 @Entity
@@ -15,8 +14,9 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ElementCollection
-    private List<String> appointmentTime;
+    private String appointmentTime;
+
+    private Boolean available;
 
     @ManyToOne
     private Doctor doctor;
