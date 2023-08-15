@@ -128,6 +128,9 @@ public class PatientController {
 
         String patientUsername = principal.getName();
         Patient patient = patientRepository.findByUserEmail(patientUsername);
+        if (patient.getAppointment() != null) {
+            return "client/appointmentError";
+        }
         appointmentService.save(doctorId, patient.getId(), appointment);
         return "redirect:/patient";
     }

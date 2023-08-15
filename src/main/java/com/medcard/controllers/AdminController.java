@@ -1,9 +1,11 @@
 package com.medcard.controllers;
 import com.medcard.dto.*;
 import com.medcard.entities.Doctor;
+import com.medcard.entities.Statistics;
 import com.medcard.entities.User;
 import com.medcard.mapper.DoctorMapper;
 import com.medcard.repositories.DoctorRepository;
+import com.medcard.repositories.StatisticsRepository;
 import com.medcard.services.DoctorService;
 import com.medcard.services.UserService;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ public class AdminController {
 	private final DoctorRepository doctorRepository;
 	private final DoctorMapper doctorMapper;
 	private final UserService userService;
+	private final StatisticsRepository statisticsRepository;
 
 	@GetMapping
 	public String home() {
@@ -84,5 +87,13 @@ public class AdminController {
 	@GetMapping("/help")
 	public String help() {
 		return "admin/help";
+	}
+
+	@GetMapping("/statistics")
+	public String showStatisticsPage(Model model) {
+		List<Statistics> statisticsData = statisticsRepository.findAll(); // Fetch statistics data from the service
+		model.addAttribute("statisticsData", statisticsData);
+
+		return "admin/statistics";
 	}
 }

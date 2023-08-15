@@ -31,4 +31,7 @@ public class Patient {
 
     @OneToOne(mappedBy = "patient")
     private History history;
+
+    @OneToOne
+    private Appointment appointment;
 }

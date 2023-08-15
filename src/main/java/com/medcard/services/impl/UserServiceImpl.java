@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final PatientRepository patientRepository;
     private final DoctorRepository doctorRepository;
-
+    private final StatisticsImpl statistics;
     @Override
     public void saveUser(UserDto userDto) {
         User user = new User();
@@ -38,6 +38,7 @@ public class UserServiceImpl implements UserService {
         user.setPatient(patient);
         patient.setUser(user);
         userRepository.save(user);
+        statistics.updateRegistrationStatistics();
     }
 
     @Override
@@ -54,6 +55,7 @@ public class UserServiceImpl implements UserService {
         user.setDoctor(doctor);
         doctor.setUser(user);
         userRepository.save(user);
+        statistics.updateRegistrationStatistics();
     }
 
     @Override

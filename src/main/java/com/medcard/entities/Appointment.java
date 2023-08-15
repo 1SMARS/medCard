@@ -21,6 +21,6 @@ public class Appointment {
     @ManyToOne
     private Doctor doctor;
 
-    @OneToOne
+    @OneToOne(mappedBy = "appointment")
     private Patient patient;
 }

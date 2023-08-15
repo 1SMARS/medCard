@@ -25,26 +25,31 @@ public class AppointmentServiceImpl implements AppointmentService {
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
         Patient patient = patientRepository.findById(patientId).orElseThrow();
 
+        // Save the appointment first
+        Appointment savedAppointment = appointmentRepository.save(appointment);
+
+        // Update associations
         List<Appointment> appointments = new ArrayList<>();
         List<Patient> patients = new ArrayList<>();
         List<Doctor> doctors = new ArrayList<>();
         doctors.add(doctor);
 
-        appointments.add(appointment);
+        appointments.add(savedAppointment);
         patients.add(patient);
 
-        appointment.setPatient(patient);
-        appointment.setDoctor(doctor);
+        savedAppointment.setPatient(patient);
+        savedAppointment.setDoctor(doctor);
 
         doctor.setAppointments(appointments);
         patient.setDoctors(doctors);
+        patient.setAppointment(savedAppointment);
 
         doctor.setPatients(patients);
-        appointment.setAppointmentTime(appointment.getAppointmentTime());
+        savedAppointment.setAppointmentTime(appointment.getAppointmentTime());
 
         History history = new History();
         history.setPatient(patient);
-        history.setAppointmentTime(appointment.getAppointmentTime().toString());
+        history.setAppointmentTime(savedAppointment.getAppointmentTime().toString());
         history.setDoctorName(doctor.getUser().getFirstname());
         history.setDoctorSurname(doctor.getUser().getLastname());
         history.setSpecialization(doctor.getSpecialization());
@@ -52,7 +57,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         patient.setHistory(history);
         historyRepository.save(history);
 
-        return appointmentRepository.save(appointment);
+        return savedAppointment;
     }
 
     public boolean isTimeAvailable(String time, Long doctorId) {
@@ -62,6 +67,21 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public void deleteForDoctor(Long id) {
+        Appointment appointment = appointmentRepository.findById(id).orElseThrow();
+
+        // Remove the appointment from the doctor's appointments list
+        Doctor doctor = appointment.getDoctor();
+        doctor.getAppointments().remove(appointment);
+        doctorRepository.save(doctor);
+
+        // Remove the appointment from the patient's appointment
+        Patient patient = appointment.getPatient();
+        if (patient != null) {
+            patient.setAppointment(null);
+            patientRepository.save(patient);
+        }
+
+        // Delete the appointment
         appointmentRepository.deleteById(id);
     }
 
