@@ -2,18 +2,19 @@ package com.medcard.controllers;
 
 import com.medcard.dto.*;
 import com.medcard.entities.Appointment;
+import com.medcard.entities.Doctor;
+import com.medcard.entities.Form;
 import com.medcard.entities.Patient;
 import com.medcard.mapper.DoctorMapper;
 import com.medcard.mapper.PatientMapper;
+import com.medcard.repositories.DoctorRepository;
 import com.medcard.repositories.PatientRepository;
-import com.medcard.services.impl.*;
+import com.medcard.services.*;
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.IncorrectResultSetColumnCountException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -21,21 +22,21 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.Principal;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Controller
 @AllArgsConstructor
 @RequestMapping("/patient")
 public class PatientController {
 
-    private final PatientServiceImpl patientServiceImpl;
-    private final DoctorServiceImpl doctorServiceImpl;
-    private final FormServiceImpl formService;
-    private final AppointmentServiceImpl appointmentService;
-    private final HistoryServiceImpl historyService;
+    private final PatientService patientService;
+    private final DoctorService doctorService;
+    private final FormService formService;
+    private final AppointmentService appointmentService;
+    private final HistoryService historyService;
     private final PatientMapper patientMapper;
     private final DoctorMapper doctorMapper;
     private final PatientRepository patientRepository;
+    private final DoctorRepository doctorRepository;
 
     @GetMapping
     public String home() {
@@ -44,14 +45,14 @@ public class PatientController {
 
     @GetMapping("/doctors")
     public String doctors(Model model) {
-        List<DoctorDto> doctors = doctorMapper.convertToDtoList(doctorServiceImpl.getAll());
+        List<DoctorDto> doctors = doctorMapper.convertToDtoList(doctorService.getAll());
         model.addAttribute("doctors", doctors);
         return "client/client-doctors";
     }
 
     @GetMapping("/doctor/{id}")
     public String showDoctorDetails(@PathVariable Long id, Model model) {
-        DoctorDto doctorDto =  doctorMapper.convertToDto(doctorServiceImpl.getById(id));
+        DoctorDto doctorDto =  doctorMapper.convertToDto(doctorService.getById(id));
         model.addAttribute("doctor", doctorDto);
         return "client/doctor-details";
     }
@@ -60,7 +61,7 @@ public class PatientController {
     public String showProfile(Model model, Principal principal) {
         String patientUsername = principal.getName();
         Patient patient = patientRepository.findByUserEmail(patientUsername);
-        PatientDto patientDto = patientMapper.apply(patientServiceImpl.getById(patient.getId()));
+        PatientDto patientDto = patientMapper.apply(patientService.getById(patient.getId()));
         model.addAttribute("patient", patientDto);
         return "client/client-profile";
     }
@@ -69,7 +70,7 @@ public class PatientController {
     public String showUpdateProfile(Model model, Principal principal) {
         String patientUsername = principal.getName();
         Patient patient = patientRepository.findByUserEmail(patientUsername);
-        PatientDto patientDto = patientMapper.apply(patientServiceImpl.getById(patient.getId()));
+        PatientDto patientDto = patientMapper.apply(patientService.getById(patient.getId()));
         model.addAttribute("patient", patientDto);
         return "client/client-update-profile";
     }
@@ -92,19 +93,20 @@ public class PatientController {
             imageUUID = imgName;
         }
 
-        patientServiceImpl.update(patient.getId(), updateRequest, imageUUID);
+        patientService.update(patient.getId(), updateRequest, imageUUID);
         return "redirect:/patient/profile";
     }
 
-    @GetMapping("/get/form")
-    public String getFormByPatientId(Model model, Principal principal) {
-        String patientUsername = principal.getName();
-        Patient patient = patientRepository.findByUserEmail(patientUsername);
-
-        if (formService.getFormByPatientId(patient.getId()) == null) {
+    @GetMapping("/get/form/{doctorId}")
+    public String getFormByPatientId(@PathVariable Long doctorId, Model model, Principal principal) {
+        String username = principal.getName();
+        Patient patient = patientRepository.findByUserEmail(username);
+        Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
+        if (formService.getFormByPatientId(patient.getId(), doctor.getId()) == null) {
             return "client/client-empty-form";
         }
-        model.addAttribute("form", formService.getFormByPatientId(patient.getId()));
+        model.addAttribute("doctor", doctor);
+        model.addAttribute("form", formService.getFormByPatientId(patient.getId(), doctor.getId()));
         return "client/client-form";
     }
 
@@ -112,7 +114,7 @@ public class PatientController {
     public String showAppointmentForm(Model model, @PathVariable Long doctorId, Principal principal) {
         String patientUsername = principal.getName();
         Patient patientDto = patientRepository.findByUserEmail(patientUsername);
-        DoctorDto doctorDto = doctorMapper.convertToDto(doctorServiceImpl.getById(doctorId));
+        DoctorDto doctorDto = doctorMapper.convertToDto(doctorService.getById(doctorId));
         List<String> availableTimes = appointmentService.generateAppointmentTimes();
         model.addAttribute("availableTimes", availableTimes);
         model.addAttribute("doctor", doctorDto);
@@ -128,7 +130,10 @@ public class PatientController {
 
         String patientUsername = principal.getName();
         Patient patient = patientRepository.findByUserEmail(patientUsername);
-        if (patient.getAppointment() != null) {
+
+        boolean hasAppointment = appointmentService.hasAppointmentWithDoctor(patient.getId(), doctorId);
+
+        if (hasAppointment) {
             return "client/appointmentError";
         }
         appointmentService.save(doctorId, patient.getId(), appointment);

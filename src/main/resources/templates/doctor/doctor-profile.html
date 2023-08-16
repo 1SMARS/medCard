@@ -120,11 +120,6 @@
       margin: 0;
     }
 
-
-
-
-
-
     .container-fluid {
       display: flex;
       justify-content: space-between;
@@ -188,7 +183,7 @@
 
 <div class="container-fluid">
   <div class="image-left">
-    <img src="https://img.freepik.com/free-icon/user_318-563642.jpg?w=360" th:src="@{${'/IMAGES/' + doctor.profileImg}}" width="150" height="150">
+    <img th:src="@{${'/IMAGES/' + doctor.profileImg}}" width="150" height="150">
   </div>
 
   <div class="center-container">

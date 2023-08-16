@@ -2,7 +2,6 @@ package com.medcard.services.impl;
 
 
 import com.medcard.dto.DoctorCreateRequest;
-import com.medcard.dto.DoctorUpdateRequest;
 import com.medcard.dto.UserDto;
 import com.medcard.entities.Doctor;
 import com.medcard.entities.Patient;

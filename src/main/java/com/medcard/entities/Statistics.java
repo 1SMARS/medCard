@@ -20,7 +20,7 @@ public class Statistics {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private YearMonth yearMonth; // Store year and month of the statistics
+    private YearMonth yearMonth;
 
     private Long userCount;
 }

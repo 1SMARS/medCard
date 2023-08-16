@@ -1,8 +1,8 @@
 package com.medcard.services.impl;
 
+import com.medcard.entities.Doctor;
 import com.medcard.entities.Form;
 import com.medcard.entities.History;
-import com.medcard.entities.Patient;
 import com.medcard.repositories.FormRepository;
 import com.medcard.repositories.HistoryRepository;
 import com.medcard.services.HistoryService;
@@ -34,7 +34,7 @@ public class HistoryServiceImpl implements HistoryService {
         if (form != null) {
             form.setHistory(null);
             if (form.getPatient() != null) {
-                form.getPatient().setForm(null);
+                form.getPatient().getForms().remove(form);
             }
             formRepository.delete(form);
         }
@@ -42,4 +42,8 @@ public class HistoryServiceImpl implements HistoryService {
         historyRepository.deleteById(id);
     }
 
+    @Override
+    public void deleteByDoctor(Doctor doctor) {
+        historyRepository.deleteByDoctor(doctor);
+    }
 }

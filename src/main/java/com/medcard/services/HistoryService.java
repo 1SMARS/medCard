@@ -1,5 +1,6 @@
 package com.medcard.services;
 
+import com.medcard.entities.Doctor;
 import com.medcard.entities.History;
 
 import java.util.List;
@@ -10,4 +11,5 @@ public interface HistoryService {
 
     void delete(Long id);
 
+    void deleteByDoctor(Doctor doctor);
 }

@@ -76,7 +76,7 @@
             <td th:text="${item.appointmentTime}"></td>
             <td th:text="${item.specialization}"></td>
             <td>
-                <a class="button" th:href="@{/patient/get/form}">
+                <a class="button" th:href="@{/patient/get/form/{doctorId}(doctorId=${item.doctor.id})}">
                     View
                 </a>
                 <a class="button" th:href="@{/patient/delete/history/{id}(id=${item.id})}">

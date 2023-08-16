@@ -31,4 +31,11 @@ public class Doctor {
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor")
     private List<Appointment> appointments;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor")
+    private List<Form> forms;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "doctor", orphanRemoval = true)
+    private List<History> histories = new ArrayList<>();
+
 }

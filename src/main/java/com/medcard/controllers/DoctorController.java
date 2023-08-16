@@ -14,6 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.print.Doc;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -91,9 +92,11 @@ public class DoctorController {
 	}
 
 	@GetMapping("/form/{patientId}")
-	public String showForm(@PathVariable Long patientId, Model model) {
+	public String showForm(@PathVariable Long patientId, Model model, Principal principal) {
 		Patient patient = patientService.getById(patientId);
-		Form existingForm = formService.getFormByPatientId(patientId);
+		String username = principal.getName();
+		Doctor doctor = doctorRepository.findByUserEmail(username);
+		Form existingForm = formService.getFormByPatientId(patientId, doctor.getId());
 		if (existingForm != null) {
 			model.addAttribute("form", existingForm);
 		} else {
@@ -105,14 +108,18 @@ public class DoctorController {
 	}
 
 	@PostMapping(value = "/fill/form/{patientId}")
-	public String fillForm(@PathVariable Long patientId, @ModelAttribute Form form) {
-		Form existingForm = formService.getFormByPatientId(patientId);
+	public String fillForm(@PathVariable Long patientId, @ModelAttribute Form form, Principal principal) {
+		Patient patient = patientService.getById(patientId);
+		String doctorUsername = principal.getName();
+		Doctor doctor = doctorRepository.findByUserEmail(doctorUsername);
+
+		Form existingForm = formService.getFormByPatientId(patientId, doctor.getId());
 		if (existingForm != null) {
 			existingForm.setDescription(form.getDescription());
 			existingForm.setDisease(form.getDisease());
 			formService.updateForm(existingForm.getId(), existingForm);
 		} else {
-			formService.createForm(patientId, form);
+			formService.createForm(patientId, doctor.getId(), form);
 		}
 
 		return "redirect:/doctor";

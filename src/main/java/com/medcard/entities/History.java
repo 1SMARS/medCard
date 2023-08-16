@@ -23,8 +23,11 @@ public class History {
     private String appointmentTime;
     private String specialization;
 
-    @OneToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH,CascadeType.DETACH, CascadeType.PERSIST})
     private Patient patient;
+
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH,CascadeType.DETACH, CascadeType.PERSIST})
+    private Doctor doctor;
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "history" , orphanRemoval = true)
     private Form form;

@@ -26,12 +26,12 @@ public class Patient {
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "patient")
     private User user;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Form form;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Form> forms;
 
-    @OneToOne(mappedBy = "patient")
-    private History history;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "patient")
+    private List<History> histories;
 
-    @OneToOne
-    private Appointment appointment;
+    @OneToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH,CascadeType.DETACH, CascadeType.PERSIST}, mappedBy = "patient")
+    private List<Appointment> appointments;
 }

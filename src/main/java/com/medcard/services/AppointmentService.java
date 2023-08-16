@@ -16,9 +16,9 @@ public interface AppointmentService {
 
     List<Appointment> getAppointmentsByDoctor(Long doctorId);
 
-//    boolean isTimeBooked(Long doctorId, String appointmentTime);
+    boolean isTimeAvailable(String time, Long doctorId);
 
     List<String> generateAppointmentTimes();
 
-//    void bookAppointment(Long doctorId, String appointmentTime);
+    boolean hasAppointmentWithDoctor(Long patientId, Long doctorId);
 }

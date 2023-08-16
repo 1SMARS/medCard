@@ -58,7 +58,7 @@
 <body>
     <ul th:replace="~{navbar-layout :: clientNavBar}"></ul>
 <div class="center">
-    <form th:each="item:${form}">
+    <form th:action="@{/patient/get/form/{doctorId}(doctorId=${doctor.id})}" th:each="item:${form}">
         <label for="disease" class="label-text">Disease</label>
         <input readonly th:value="${item.disease}" type="text" id="disease" name="disease">
 

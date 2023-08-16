@@ -1,26 +1,17 @@
 package com.medcard.services.impl;
 
-import com.medcard.controllers.DoctorController;
 import com.medcard.dto.DoctorCreateRequest;
-import com.medcard.dto.DoctorDto;
 import com.medcard.dto.DoctorUpdateRequest;
-
-import com.medcard.dto.UserDto;
-import com.medcard.entities.Patient;
-import com.medcard.entities.Role;
-import com.medcard.entities.User;
-import com.medcard.repositories.DoctorRepository;
-import com.medcard.entities.Doctor;
-import com.medcard.repositories.PatientRepository;
-import com.medcard.repositories.UserRepository;
+import com.medcard.entities.*;
+import com.medcard.repositories.*;
 import com.medcard.services.DoctorService;
+import com.medcard.services.HistoryService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Objects;
 
 @Service
 @AllArgsConstructor
@@ -30,6 +21,10 @@ public class DoctorServiceImpl implements DoctorService {
     private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private final FormRepository formRepository;
+    private final HistoryRepository historyRepository;
+    private final AppointmentRepository appointmentRepository;
+    private final HistoryService historyService;
 
     @Override
     public void saveDoctor(DoctorCreateRequest createRequest) {
@@ -62,19 +57,75 @@ public class DoctorServiceImpl implements DoctorService {
         Doctor doctor = doctorRepository.findById(id).orElse(null);
 
         if (doctor != null) {
-            List<Patient> patients = doctor.getPatients();
+            // Delete associations in a proper order to avoid foreign key constraint violations
 
-            if (patients != null) {
-                for (Patient patient : patients) {
-                    patient.getDoctors().remove(doctor);
-                    patientRepository.save(patient);
+            // 1. Delete forms associated with patients
+            List<Form> forms = new ArrayList<>(doctor.getForms()); // Create a copy to avoid concurrent modification
+            for (Form form : forms) {
+                // Delete associations with patients
+                Patient patient = form.getPatient();
+                if (patient != null) {
+                    patient.getForms().remove(form);
+                    form.setPatient(null);
                 }
-                doctor.setPatients(null);
+
+                if (form.getDoctor() != null) {
+                    form.setDoctor(null);
+                    doctor.getForms().remove(form);
+                }
+
+                // Delete associations with history
+                History history = form.getHistory();
+                if (history != null) {
+                    history.setForm(null);
+                }
+                formRepository.delete(form);
             }
 
+            // 2. Delete histories associated with the doctor
+            List<History> histories = new ArrayList<>(doctor.getHistories()); // Create a copy to avoid concurrent modification
+            for (History history : histories) {
+                // Delete associations with patients
+                Patient patient = history.getPatient();
+                if (patient != null) {
+                    patient.setHistories(null);
+                }
+
+                // Delete associations with form
+                Form form = history.getForm();
+                if (form != null) {
+                    form.setHistory(null);
+                }
+                historyRepository.delete(history);
+            }
+
+            // 3. Delete associations with patients
+            List<Patient> patients = new ArrayList<>(doctor.getPatients()); // Create a copy to avoid concurrent modification
+            for (Patient patient : patients) {
+                patient.getDoctors().remove(doctor);
+                patientRepository.save(patient);
+            }
+
+            // 4. Delete appointments associated with the doctor
+            List<Appointment> appointments = new ArrayList<>(doctor.getAppointments()); // Create a copy to avoid concurrent modification
+            for (Appointment appointment : appointments) {
+                // Delete associations with patients
+                Patient patient = appointment.getPatient();
+                if (patient != null) {
+                    patient.getAppointments().remove(appointment);
+                }
+                appointment.setDoctor(null);
+                doctor.getAppointments().remove(appointment);
+                appointmentRepository.delete(appointment);
+            }
+
+            // Finally, delete the doctor
             doctorRepository.deleteById(id);
         }
     }
+
+
+
 
 
     @Override

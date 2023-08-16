@@ -3,11 +3,9 @@ package com.medcard.services.impl;
 import com.medcard.entities.*;
 import com.medcard.repositories.*;
 import com.medcard.services.AppointmentService;
-import com.medcard.services.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
 import java.util.*;
 
 @Service
@@ -21,32 +19,33 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Appointment save(Long doctorId, Long patientId, Appointment appointment) {
-
         Doctor doctor = doctorRepository.findById(doctorId).orElseThrow();
         Patient patient = patientRepository.findById(patientId).orElseThrow();
 
-        // Save the appointment first
-        Appointment savedAppointment = appointmentRepository.save(appointment);
+        // Check if the patient already has an appointment with the given doctor
+        boolean hasAppointment = hasAppointmentWithDoctor(patientId, doctorId);
 
-        // Update associations
-        List<Appointment> appointments = new ArrayList<>();
-        List<Patient> patients = new ArrayList<>();
-        List<Doctor> doctors = new ArrayList<>();
-        doctors.add(doctor);
+        if (!hasAppointment) {
+            // Save the appointment
+            appointment.setDoctor(doctor);
+            appointment.setPatient(patient);
+            appointmentRepository.save(appointment);
 
-        appointments.add(savedAppointment);
-        patients.add(patient);
+            // Update associations
+            patient.getAppointments().add(appointment);
+            doctor.getAppointments().add(appointment);
 
-        savedAppointment.setPatient(patient);
-        savedAppointment.setDoctor(doctor);
+            createHistoryRecord(patient, doctor, appointment);
+            return appointment;
 
-        doctor.setAppointments(appointments);
-        patient.setDoctors(doctors);
-        patient.setAppointment(savedAppointment);
+        } else {
+            // Handle case when patient already has an appointment with the doctor
+            throw new IllegalArgumentException("Patient already has an appointment with this doctor.");
+        }
+    }
 
-        doctor.setPatients(patients);
-        savedAppointment.setAppointmentTime(appointment.getAppointmentTime());
-
+    // Call this method after the appointment is successfully saved
+    private void createHistoryRecord(Patient patient, Doctor doctor, Appointment savedAppointment) {
         History history = new History();
         history.setPatient(patient);
         history.setAppointmentTime(savedAppointment.getAppointmentTime().toString());
@@ -54,12 +53,19 @@ public class AppointmentServiceImpl implements AppointmentService {
         history.setDoctorSurname(doctor.getUser().getLastname());
         history.setSpecialization(doctor.getSpecialization());
 
-        patient.setHistory(history);
-        historyRepository.save(history);
+        List<History> histories = doctor.getHistories(); // Manage the relationship from the Doctor side
+        if (histories == null) {
+            histories = new ArrayList<>();
+        }
+        histories.add(history);
+        doctor.setHistories(histories);
 
-        return savedAppointment;
+        history.setDoctor(doctor);
+
+        historyRepository.save(history);
     }
 
+    @Override
     public boolean isTimeAvailable(String time, Long doctorId) {
         List<Appointment> appointments = appointmentRepository.findByDoctorIdAndAppointmentTime(doctorId, time);
         return appointments.isEmpty();
@@ -69,19 +75,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     public void deleteForDoctor(Long id) {
         Appointment appointment = appointmentRepository.findById(id).orElseThrow();
 
-        // Remove the appointment from the doctor's appointments list
         Doctor doctor = appointment.getDoctor();
         doctor.getAppointments().remove(appointment);
         doctorRepository.save(doctor);
 
-        // Remove the appointment from the patient's appointment
         Patient patient = appointment.getPatient();
         if (patient != null) {
-            patient.setAppointment(null);
+            patient.getAppointments().remove(appointment);
             patientRepository.save(patient);
         }
 
-        // Delete the appointment
         appointmentRepository.deleteById(id);
     }
 
@@ -102,8 +105,15 @@ public class AppointmentServiceImpl implements AppointmentService {
         return appointmentRepository.findByDoctorId(doctor.getId());
     }
 
+    @Override
     public List<String> generateAppointmentTimes() {
         return Arrays.asList("10:00", "11:30", "12:40", "13:20", "14:50", "15:40", "16:20");
+    }
+
+    @Override
+    public boolean hasAppointmentWithDoctor(Long patientId, Long doctorId) {
+        List<Appointment> appointments = appointmentRepository.findByPatientIdAndDoctorId(patientId, doctorId);
+        return !appointments.isEmpty();
     }
 }
 
